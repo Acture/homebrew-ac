@@ -1,28 +1,22 @@
 class CharCloud < Formula
-	desc "字符轮廓词云生成工具"
-	homepage "https://github.com/acture/char-cloud"
-	license "AGPL"
-	if OS.mac? && Hardware::CPU.arm?
-		url "https://github.com/acture/char-cloud/releases/download/v0.1.2/char-cloud-aarch64-macos"
-		sha256 "afaa949f709eeb5e5816686145d9c9e6478557e60826eb3160daa46ce129075b"
-	elsif OS.mac? && Hardware::CPU.intel?
-		url "https://github.com/acture/char-cloud/releases/download/v0.1.2/char-cloud-x86_64-macos"
-		sha256 "afaa949f709eeb5e5816686145d9c9e6478557e60826eb3160daa46ce129075b"
-	elsif OS.linux? && Hardware::CPU.intel?
-		url "https://github.com/acture/char-cloud/releases/download/v0.1.0/char-cloud-x86_64-linux"
-		sha256 "60ee682691e429292e2329fc3dd81e54c549cefd05b85866b0b93fa545ec015b"
-	elsif OS.windows? && Hardware::CPU.intel?
-		url "https://github.com/acture/char-cloud/releases/download/v0.1.0/char-cloud-x86_64-windows.exe"
-		sha256 "2c3850c505cc4463ff13eeceb63157cc715789bd0c831705ac032016f8e734da"
-	else
-		odie "Unsupported platform"
-	end
+	desc "Generate a high-density, shape-fitting word cloud in SVG format"
+	homepage "https://github.com/Acture/char-cloud"
+	url "https://github.com/Acture/char-cloud/archive/refs/tags/v0.1.2.tar.gz"
+	sha256 "c7bdf909266d4eb43938b019eb8aa8616ef89dfb138c90ee7b6c3ff22e4e473b"
+	license "AGPL-3.0-only"
+
+	depends_on "rust" => :build
 
 	def install
-		bin.install Dir["char-cloud*"].first => "char-cloud"
+	  system "cargo", "install", *std_cargo_args
 	end
 
 	test do
-		assert_match "Usage", shell_output("#{bin}/char-cloud --help")
+	  system bin/"char-cloud", "--version"
+	end
+
+	livecheck do
+		url :github_releases
+		regex(/^v?(\d+(?:\.\d+)+)$/i)
 	end
 end
