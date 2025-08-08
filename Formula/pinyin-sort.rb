@@ -1,5 +1,5 @@
 class PinyinSort < Formula
-  desc "A small Rust CLI that sorts Chinese strings by their Hanyu Pinyin (tone3) order"
+  desc "Sorts Chinese strings by their Hanyu Pinyin (tone3) order"
   homepage "https://github.com/Acture/pinyin-sort"
   url "https://github.com/Acture/pinyin-sort/archive/refs/tags/v0.1.1.tar.gz"
   sha256 "44f54d3869f07a7345f71c3b0a1e92ecc5b61fd639e2b6bb668db10aa45ea205"
