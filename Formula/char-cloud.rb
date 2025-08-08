@@ -16,7 +16,7 @@ class CharCloud < Formula
 	end
 
 	livecheck do
-		url :github_releases
+		url :stable
 		regex(/^v?(\d+(?:\.\d+)+)$/i)
 	end
 end
