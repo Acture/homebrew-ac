@@ -14,6 +14,12 @@ class HanziSort < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
+
+    legacy_binary = bin/"pinyin-sort"
+    # v0.1.1 still installs the old executable name from the tagged source.
+    if legacy_binary.exist? && !(bin/"hanzi-sort").exist?
+      legacy_binary.rename bin/"hanzi-sort"
+    end
   end
 
   test do
