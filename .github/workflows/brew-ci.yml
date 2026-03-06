@@ -21,9 +21,6 @@ jobs:
         id: setup-homebrew
         uses: Homebrew/actions/setup-homebrew@main
 
-      - name: Tap repository
-        run: brew tap acture/ac "${{ steps.setup-homebrew.outputs.repository-path }}"
-
       - name: Audit tap
         run: brew audit --strict --display-filename --tap acture/ac
 
@@ -44,9 +41,6 @@ jobs:
       - name: Set up Homebrew
         id: setup-homebrew
         uses: Homebrew/actions/setup-homebrew@main
-
-      - name: Tap repository
-        run: brew tap acture/ac "${{ steps.setup-homebrew.outputs.repository-path }}"
 
       - name: Install formula
         run: brew install --build-from-source "acture/ac/${{ matrix.formula }}"
