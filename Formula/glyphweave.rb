@@ -2,7 +2,7 @@ class Glyphweave < Formula
   desc "Generate shape-constrained SVG word clouds"
   homepage "https://github.com/Acture/glyphweave"
   url "https://github.com/Acture/glyphweave/archive/refs/tags/v0.2.0.tar.gz"
-  sha256 "f4e78856382440f6ed3824b748b4a501051f3f381e7e4f496f3ef0fc6e88fd59"
+  sha256 "586fa9485644e0225c7a039c04c76f28c4fada2fce5a11eab53640fb6f046285"
   license "AGPL-3.0-only"
 
   livecheck do
