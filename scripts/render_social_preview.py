@@ -136,13 +136,13 @@ def make_hero_preview() -> Path:
     draw.rounded_rectangle((110, 520, 456, 572), radius=24, fill=(255, 252, 248, 235), outline=(222, 205, 183, 255), width=2)
     draw.text((130, 532), "brew tap acture/ac", font=mono_font, fill=ink)
 
-    draw.rounded_rectangle((110, 590, 520, 642), radius=24, fill=(27, 31, 46), outline=(27, 31, 46))
-    draw.text((130, 602), "brew install char-cloud", font=mono_font, fill=(247, 242, 236))
+    draw.rounded_rectangle((110, 590, 530, 642), radius=24, fill=(27, 31, 46), outline=(27, 31, 46))
+    draw.text((130, 602), "brew install glyphweave", font=mono_font, fill=(247, 242, 236))
 
     draw.rounded_rectangle((110, 684, 238, 688), radius=2, fill=orange)
     draw.text((110, 708), "Kept small. Easy to scan. Boring to install.", font=body_font, fill=muted)
 
-    draw.text((842, 146), "char-cloud / hanzi-sort", font=label_font, fill=muted)
+    draw.text((842, 146), "glyphweave / hanzi-sort", font=label_font, fill=muted)
     draw.rounded_rectangle((842, 182, 1218, 184), radius=1, fill=(220, 201, 180, 255))
 
     cloud = Image.new("RGBA", img.size, (0, 0, 0, 0))
@@ -152,9 +152,9 @@ def make_hero_preview() -> Path:
     cloud_draw.ellipse((1012, 198, 1236, 404), fill=(242, 216, 203, 130))
     img.alpha_composite(cloud)
 
-    draw_rotated_word(img, "wordcloud", (892, 302), word_large, orange + (255,), -8)
+    draw_rotated_word(img, "glyph", (892, 302), word_large, orange + (255,), -8)
     draw_rotated_word(img, "svg", (1120, 232), word_med, sky + (255,), 90)
-    draw_rotated_word(img, "layout", (888, 226), word_small, ink + (255,), 0)
+    draw_rotated_word(img, "weave", (888, 226), word_small, ink + (255,), 0)
     draw_rotated_word(img, "seed", (1030, 520), word_small, teal + (255,), 0)
     draw_rotated_word(img, "cli", (1170, 346), word_small, orange + (255,), 0)
     draw_rotated_word(img, "typst", (1080, 392), word_med, ink + (255,), 0)
@@ -204,7 +204,7 @@ def make_social_preview() -> Path:
     draw.rounded_rectangle((92, 446, 408, 494), radius=22, fill=(255, 251, 246, 225), outline=(223, 206, 185, 255), width=2)
     draw.text((112, 458), "brew tap acture/ac", font=mono_font, fill=ink)
 
-    draw.text((784, 122), "char-cloud / hanzi-sort", font=label_font, fill=muted)
+    draw.text((784, 122), "glyphweave / hanzi-sort", font=label_font, fill=muted)
     draw.rounded_rectangle((784, 156, 1138, 158), radius=1, fill=(217, 196, 171, 255))
 
     cloud = Image.new("RGBA", img.size, (0, 0, 0, 0))
@@ -214,8 +214,9 @@ def make_social_preview() -> Path:
     cloud_draw.ellipse((976, 184, 1184, 392), fill=(239, 214, 201, 128))
     img.alpha_composite(cloud)
 
-    draw_rotated_word(img, "wordcloud", (846, 262), word_large, orange + (255,), -8)
+    draw_rotated_word(img, "glyph", (846, 262), word_large, orange + (255,), -8)
     draw_rotated_word(img, "svg", (1035, 200), word_med, sky + (255,), 90)
+    draw_rotated_word(img, "weave", (980, 330), word_small, ink + (255,), 0)
     draw_rotated_word(img, "hanzi", (836, 372), word_med, teal + (255,), -13)
     draw_rotated_word(img, "typst", (1026, 332), word_med, ink + (255,), 0)
     draw_rotated_word(img, "strokes", (1032, 476), word_small, gold + (255,), 0)

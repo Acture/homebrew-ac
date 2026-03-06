@@ -16,24 +16,24 @@
 
 ```bash
 brew tap acture/ac
-brew install char-cloud
+brew install glyphweave
 ```
 
 Direct installs also work: `brew install acture/ac/<formula>`.
 
 ## What's in this tap
 
-### `char-cloud`
+### `glyphweave`
 
 Shape-aware SVG word clouds for reports, demos, and other places where plain text should end up as something inspectable.
 
-![char-cloud preview](assets/char-cloud-preview.svg)
+![glyphweave preview](assets/glyphweave-preview.svg)
 
-Install: `brew install char-cloud`  
-Upstream: [Acture/char-cloud](https://github.com/Acture/char-cloud)
+Install: `brew install glyphweave`  
+Upstream: [Acture/glyphweave](https://github.com/Acture/glyphweave)
 
 ```bash
-char-cloud \
+glyphweave \
   --text "ACTURE" \
   --word-file words.txt \
   --algorithm fast-grid \
