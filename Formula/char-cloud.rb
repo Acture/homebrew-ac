@@ -1,8 +1,8 @@
 class CharCloud < Formula
   desc "Generate a high-density, shape-fitting word cloud in SVG format"
   homepage "https://github.com/Acture/char-cloud"
-  url "https://github.com/Acture/char-cloud/archive/refs/tags/v0.1.2.tar.gz"
-  sha256 "c7bdf909266d4eb43938b019eb8aa8616ef89dfb138c90ee7b6c3ff22e4e473b"
+  url "https://github.com/Acture/char-cloud/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "8a9b4f494701fc3afaf99c7ae74c96472e0934de5d6fccfc119b74ad413f82bc"
   license "AGPL-3.0-only"
 
   livecheck do
