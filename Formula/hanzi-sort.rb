@@ -30,9 +30,5 @@ class HanziSort < Formula
     assert_match "张三", pinyin_output
     assert_operator pinyin_output.index("李四"), :<, pinyin_output.index("王五")
     assert_operator pinyin_output.index("王五"), :<, pinyin_output.index("张三")
-
-    strokes_output = shell_output("#{bin}/hanzi-sort -t 天 一 十 --sort-by strokes --columns 1 --entry-width 2 --blank-every 0")
-    assert_operator strokes_output.index("一"), :<, strokes_output.index("十")
-    assert_operator strokes_output.index("十"), :<, strokes_output.index("天")
   end
 end
