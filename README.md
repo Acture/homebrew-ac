@@ -62,6 +62,18 @@ Upstream: [Acture/hanzi-sort](https://github.com/Acture/hanzi-sort)
 
 ## Also in this tap
 
+### `reviewloop`
+
+A durable CLI/daemon for paperreview.ai submission and review retrieval when the workflow needs persistent state, explicit retries, and local artifacts.
+
+Install: `brew install reviewloop`  
+Upstream: [Acture/review-loop](https://github.com/Acture/review-loop)
+
+```bash
+$ reviewloop status --json
+[]
+```
+
 ### `d2typ`
 
 Turn CSV, JSON, YAML, TOML, or XLSX into Typst-ready data when a document pipeline needs one less manual step.
