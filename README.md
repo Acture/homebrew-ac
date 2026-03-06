@@ -1,10 +1,16 @@
-# Acture Homebrew Tap
-
-[![CI](https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml/badge.svg?branch=master)](https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml)
-[![License](https://img.shields.io/github/license/Acture/homebrew-ac)](LICENSE)
-![Platforms](https://img.shields.io/badge/platform-macOS%20%2B%20Linux-C67A3C)
-
-Author-maintained Homebrew tap for small Rust CLI tools: SVG word clouds, Typst data conversion, and Hanyu Pinyin sorting.
+<div align="center">
+  <p><sub>Acture / homebrew-ac</sub></p>
+  <p>
+    <a href="https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml"><img src="https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml/badge.svg?branch=master" alt="CI"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/Acture/homebrew-ac" alt="License"></a>
+    <img src="https://img.shields.io/badge/platform-macOS%20%2B%20Linux-C67A3C" alt="Platforms">
+  </p>
+  <h1>Small Rust tools with clear jobs.</h1>
+  <p><strong>A Homebrew tap for a few utilities worth keeping sharp.<br>Not a giant toolbox. Just a few tools that do their work cleanly.</strong></p>
+  <p>
+    <img src="assets/hero-preview.png" alt="Acture Homebrew Tap hero preview" width="980">
+  </p>
+</div>
 
 ## Install
 
@@ -13,23 +19,55 @@ brew tap acture/ac
 brew install char-cloud
 ```
 
-You can also install directly with `brew install acture/ac/<formula>`.
+Direct installs also work: `brew install acture/ac/<formula>`.
 
-## Choose a Tool
+## What's in this tap
 
-| Tool | Use it when | Install | Upstream |
-| --- | --- | --- | --- |
-| `char-cloud` | create shape-constrained SVG word clouds for reports, demos, and visual experiments | `brew install char-cloud` | [Acture/char-cloud](https://github.com/Acture/char-cloud) |
-| `d2typ` | turn CSV/JSON/YAML/TOML/XLSX data into Typst-ready structures | `brew install d2typ` | [Acture/d2typ](https://github.com/Acture/d2typ) |
-| `pinyin-sort` | sort Chinese text lists into predictable Hanyu Pinyin order for publishing and cleanup | `brew install pinyin-sort` | [Acture/pinyin-sort](https://github.com/Acture/pinyin-sort) |
+### `char-cloud`
 
-## Example Preview
-
-`char-cloud` preview, generated from a fixed-seed upstream example:
+Shape-aware SVG word clouds for reports, demos, and other places where plain text should end up as something inspectable.
 
 ![char-cloud preview](assets/char-cloud-preview.svg)
 
-`d2typ` in one pass:
+Install: `brew install char-cloud`  
+Upstream: [Acture/char-cloud](https://github.com/Acture/char-cloud)
+
+```bash
+char-cloud \
+  --text "ACTURE" \
+  --word-file words.txt \
+  --algorithm fast-grid \
+  --seed 7 \
+  --output cloud.svg
+```
+
+### `pinyin-sort`
+
+```text
+before
+张三
+李四
+王五
+
+after
+李四
+王五
+张三
+```
+
+Sort Chinese text lists into predictable Hanyu Pinyin order for publishing, cleanup, and low-drama review passes.
+
+Install: `brew install pinyin-sort`  
+Upstream: [Acture/pinyin-sort](https://github.com/Acture/pinyin-sort)
+
+## Also in this tap
+
+### `d2typ`
+
+Turn CSV, JSON, YAML, TOML, or XLSX into Typst-ready data when a document pipeline needs one less manual step.
+
+Install: `brew install d2typ`  
+Upstream: [Acture/d2typ](https://github.com/Acture/d2typ)
 
 ```bash
 $ d2typ examples/d2typ/input.json -o out.typ
@@ -37,33 +75,13 @@ $ cat out.typ
 #let data = {count: 3, items: [svg, typst, pinyin], ready: true}
 ```
 
-`pinyin-sort` for a quick cleanup:
+## Why this tap exists
 
-```text
-# input
-张三
-李四
-王五
+This tap stays small on purpose. The formulae here do narrow jobs, produce output that can be checked quickly, and keep installation boring.
 
-# output
-李四
-王五
-张三
-```
-
-See the upstream repositories for complete flags, data format details, and extended examples.
-
-## Why Trust This Tap
-
-- Author-maintained formulae that track tagged upstream releases.
-- CI audits the tap and build-tests the stable CLI installs on macOS and Linux.
+- Tracks tagged upstream releases.
+- CI audits the tap and verifies the stable install set.
 - Smoke tests validate real output, not just `--version`.
-
-## Notes
-
-- This tap is for Homebrew users on macOS and Linux.
-- Current formulae build from source with Rust, so first-time installs can take a little longer.
-- Use `brew info <formula>` to inspect dependencies and caveats, and `brew upgrade` to pull newer releases.
 
 ## License
 
