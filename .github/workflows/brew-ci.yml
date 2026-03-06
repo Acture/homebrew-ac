@@ -34,7 +34,7 @@ jobs:
           - macos-14
         formula:
           # d2typ is temporarily excluded while its upstream build issue is being fixed.
-          - char-cloud
+          - glyphweave
           - hanzi-sort
           - reviewloop
 

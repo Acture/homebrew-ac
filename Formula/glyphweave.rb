@@ -1,8 +1,8 @@
-class CharCloud < Formula
-  desc "Generate dense SVG word clouds that fit a target shape"
-  homepage "https://github.com/Acture/char-cloud"
-  url "https://github.com/Acture/char-cloud/archive/refs/tags/v0.2.0.tar.gz"
-  sha256 "8a9b4f494701fc3afaf99c7ae74c96472e0934de5d6fccfc119b74ad413f82bc"
+class Glyphweave < Formula
+  desc "Generate shape-constrained SVG word clouds"
+  homepage "https://github.com/Acture/glyphweave"
+  url "https://github.com/Acture/glyphweave/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "f4e78856382440f6ed3824b748b4a501051f3f381e7e4f496f3ef0fc6e88fd59"
   license "AGPL-3.0-only"
 
   livecheck do
@@ -14,6 +14,12 @@ class CharCloud < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
+
+    legacy_binary = bin/"char-cloud"
+    # v0.2.0 still installs the old executable name from the tagged source.
+    if legacy_binary.exist? && !(bin/"glyphweave").exist?
+      legacy_binary.rename bin/"glyphweave"
+    end
   end
 
   test do
@@ -25,12 +31,12 @@ class CharCloud < Formula
       "/usr/share/fonts/opentype/noto/NotoSansSC-Regular.otf",
       "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
     ].find { |path| File.exist?(path) }
-    assert font, "No suitable system font found for char-cloud test"
+    assert font, "No suitable system font found for glyphweave test"
 
     (testpath/"words.txt").write("cloud,3\nsvg,2\nlayout\n")
     output = testpath/"out.svg"
 
-    system bin/"char-cloud", "--text", "AI",
+    system bin/"glyphweave", "--text", "AI",
                               "--word-file", testpath/"words.txt",
                               "--algorithm", "fast-grid",
                               "--seed", "7",
