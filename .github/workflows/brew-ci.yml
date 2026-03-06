@@ -1,0 +1,55 @@
+name: Brew CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+
+jobs:
+  audit:
+    runs-on: macos-14
+    steps:
+      - name: Set up Homebrew
+        id: setup-homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Tap repository
+        run: brew tap acture/ac "${{ steps.setup-homebrew.outputs.repository-path }}"
+
+      - name: Audit tap
+        run: brew audit --strict --display-filename --tap acture/ac
+
+  install-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-14
+        formula:
+          # d2typ is temporarily excluded while its upstream build issue is being fixed.
+          - char-cloud
+          - pinyin-sort
+
+    steps:
+      - name: Set up Homebrew
+        id: setup-homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Tap repository
+        run: brew tap acture/ac "${{ steps.setup-homebrew.outputs.repository-path }}"
+
+      - name: Install formula
+        run: brew install --build-from-source "acture/ac/${{ matrix.formula }}"
+
+      - name: Test formula
+        run: brew test "${{ matrix.formula }}"
