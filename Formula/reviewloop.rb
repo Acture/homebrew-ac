@@ -43,8 +43,7 @@ class Reviewloop < Formula
 
     config_path = testpath/".config/reviewloop/reviewloop.toml"
     assert_path_exists config_path
-    assert_match 'id = "main"', config_path.read
-    assert_match 'backend = "stanford"', config_path.read
+    assert_match '[providers.stanford]', config_path.read
 
     output = shell_output("#{bin}/reviewloop --config #{testpath/"reviewloop-test.toml"} status --json")
     assert_equal "[]\n", output
