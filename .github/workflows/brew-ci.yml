@@ -35,7 +35,7 @@ jobs:
         formula:
           # d2typ is temporarily excluded while its upstream build issue is being fixed.
           - char-cloud
-          - pinyin-sort
+          - hanzi-sort
 
     steps:
       - name: Set up Homebrew

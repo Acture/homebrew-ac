@@ -142,7 +142,7 @@ def make_hero_preview() -> Path:
     draw.rounded_rectangle((110, 684, 238, 688), radius=2, fill=orange)
     draw.text((110, 708), "Kept small. Easy to scan. Boring to install.", font=body_font, fill=muted)
 
-    draw.text((842, 146), "char-cloud / pinyin-sort", font=label_font, fill=muted)
+    draw.text((842, 146), "char-cloud / hanzi-sort", font=label_font, fill=muted)
     draw.rounded_rectangle((842, 182, 1218, 184), radius=1, fill=(220, 201, 180, 255))
 
     cloud = Image.new("RGBA", img.size, (0, 0, 0, 0))
@@ -158,8 +158,9 @@ def make_hero_preview() -> Path:
     draw_rotated_word(img, "seed", (1030, 520), word_small, teal + (255,), 0)
     draw_rotated_word(img, "cli", (1170, 346), word_small, orange + (255,), 0)
     draw_rotated_word(img, "typst", (1080, 392), word_med, ink + (255,), 0)
-    draw_rotated_word(img, "pinyin", (860, 458), word_med, teal + (255,), -12)
-    draw_rotated_word(img, "brew", (1114, 560), word_small, gold + (255,), 0)
+    draw_rotated_word(img, "hanzi", (864, 458), word_med, teal + (255,), -12)
+    draw_rotated_word(img, "strokes", (1010, 556), word_small, gold + (255,), 0)
+    draw_rotated_word(img, "brew", (1132, 520), word_small, gold + (255,), 0)
     draw_rotated_word(img, "sort", (892, 338), word_small, ink + (255,), 0)
     draw_rotated_word(img, "rust", (962, 548), word_small, sky + (255,), 90)
 
@@ -203,7 +204,7 @@ def make_social_preview() -> Path:
     draw.rounded_rectangle((92, 446, 408, 494), radius=22, fill=(255, 251, 246, 225), outline=(223, 206, 185, 255), width=2)
     draw.text((112, 458), "brew tap acture/ac", font=mono_font, fill=ink)
 
-    draw.text((784, 122), "char-cloud / pinyin-sort", font=label_font, fill=muted)
+    draw.text((784, 122), "char-cloud / hanzi-sort", font=label_font, fill=muted)
     draw.rounded_rectangle((784, 156, 1138, 158), radius=1, fill=(217, 196, 171, 255))
 
     cloud = Image.new("RGBA", img.size, (0, 0, 0, 0))
@@ -215,9 +216,10 @@ def make_social_preview() -> Path:
 
     draw_rotated_word(img, "wordcloud", (846, 262), word_large, orange + (255,), -8)
     draw_rotated_word(img, "svg", (1035, 200), word_med, sky + (255,), 90)
-    draw_rotated_word(img, "pinyin", (824, 372), word_med, teal + (255,), -13)
+    draw_rotated_word(img, "hanzi", (836, 372), word_med, teal + (255,), -13)
     draw_rotated_word(img, "typst", (1026, 332), word_med, ink + (255,), 0)
-    draw_rotated_word(img, "brew", (1072, 478), word_small, gold + (255,), 0)
+    draw_rotated_word(img, "strokes", (1032, 476), word_small, gold + (255,), 0)
+    draw_rotated_word(img, "brew", (1092, 444), word_small, gold + (255,), 0)
     draw_rotated_word(img, "sort", (836, 276), word_small, ink + (255,), 0)
     draw_rotated_word(img, "cli", (1098, 280), word_small, orange + (255,), 0)
     draw_rotated_word(img, "tap", (944, 264), word_small, teal + (255,), 90)

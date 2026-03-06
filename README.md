@@ -41,7 +41,7 @@ char-cloud \
   --output cloud.svg
 ```
 
-### `pinyin-sort`
+### `hanzi-sort`
 
 ```text
 before
@@ -55,10 +55,10 @@ after
 张三
 ```
 
-Sort Chinese text lists into predictable Hanyu Pinyin order for publishing, cleanup, and low-drama review passes.
+Sort Chinese text by pinyin or stroke count for publishing, cleanup, and other workflows that need a stable order.
 
-Install: `brew install pinyin-sort`  
-Upstream: [Acture/pinyin-sort](https://github.com/Acture/pinyin-sort)
+Install: `brew install hanzi-sort`  
+Upstream: [Acture/hanzi-sort](https://github.com/Acture/hanzi-sort)
 
 ## Also in this tap
 
