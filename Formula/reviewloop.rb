@@ -1,8 +1,8 @@
 class Reviewloop < Formula
-  desc "Durable CLI/daemon for paperreview.ai submission and review retrieval"
-  homepage "https://github.com/Acture/review-loop"
-  url "https://github.com/Acture/review-loop/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "bad77e3bafe8e9fe9672a51ec8dcd0b4a3baf5bf482d6cd2cd82fdb31b6f7088"
+  desc "Reproducible, guardrailed automation for academic review workflows on paperreview.ai"
+  homepage "https://github.com/Acture/reviewloop"
+  url "https://github.com/Acture/reviewloop/archive/refs/tags/v0.1.1.tar.gz"
+  sha256 "b117fbd62484bb0674400c3e270c684252d5e98b6379b6f0ae833a403a9f06c4"
   license "GPL-3.0-only"
 
   livecheck do
@@ -21,12 +21,13 @@ class Reviewloop < Formula
     ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix if OS.linux?
     ENV["OPENSSL_NO_VENDOR"] = "1" if OS.linux?
 
-    system "cargo", "install", *std_cargo_args
+    system "cargo", "install", "--locked", *std_cargo_args(path: ".")
   end
 
   test do
     ENV["HOME"] = testpath
     ENV["XDG_CONFIG_HOME"] = testpath/".config"
+    ENV["REVIEWLOOP_STATE_DIR"] = testpath/".review_loop"
 
     (testpath/"paper.pdf").write("%PDF-1.4\n")
     (testpath/"reviewloop-test.toml").write <<~TOML
@@ -43,7 +44,7 @@ class Reviewloop < Formula
 
     config_path = testpath/".config/reviewloop/reviewloop.toml"
     assert_path_exists config_path
-    assert_match '[providers.stanford]', config_path.read
+    assert_includes config_path.read, "[providers.stanford]"
 
     output = shell_output("#{bin}/reviewloop --config #{testpath/"reviewloop-test.toml"} status --json")
     assert_equal "[]\n", output
