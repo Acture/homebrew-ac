@@ -37,9 +37,8 @@ class Reviewloop < Formula
     system bin/"reviewloop", "--config", testpath/"reviewloop-test.toml",
       "paper", "add",
       "--paper-id", "main",
-      "--path", testpath/"paper.pdf",
+      "--pdf-path", testpath/"paper.pdf",
       "--backend", "stanford",
-      "--watch", "false",
       "--no-submit-prompt"
 
     config_path = testpath/".config/reviewloop/reviewloop.toml"
