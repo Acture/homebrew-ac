@@ -1,8 +1,8 @@
 class Reviewloop < Formula
   desc "Reproducible, guardrailed automation for academic review workflows on paperreview.ai"
   homepage "https://github.com/Acture/reviewloop"
-  url "https://github.com/Acture/reviewloop/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "b117fbd62484bb0674400c3e270c684252d5e98b6379b6f0ae833a403a9f06c4"
+  url "https://github.com/Acture/reviewloop/archive/refs/tags/v0.1.3.tar.gz"
+  sha256 "a130e82b5dd81752c23398f883e2e6f32cadc27fed37ad38150ff09a81320b71"
   license "GPL-3.0-only"
 
   livecheck do
