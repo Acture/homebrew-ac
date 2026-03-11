@@ -13,8 +13,8 @@ class Reviewloop < Formula
   depends_on "rust" => :build
 
   on_linux do
-    depends_on "openssl@3"
     depends_on "pkgconf" => :build
+    depends_on "openssl@3"
   end
 
   def install
@@ -30,24 +30,27 @@ class Reviewloop < Formula
     ENV["REVIEWLOOP_STATE_DIR"] = testpath/".review_loop"
 
     (testpath/"paper.pdf").write("%PDF-1.4\n")
-    (testpath/"reviewloop-test.toml").write <<~TOML
-      [logging]
-      output = "file"
-    TOML
 
-    system bin/"reviewloop", "--config", testpath/"reviewloop-test.toml",
+    system bin/"reviewloop", "init"
+    system bin/"reviewloop", "init", "project", "--project-id", "main"
+
+    project_config_path = testpath/"reviewloop.toml"
+    assert_path_exists project_config_path
+    assert_includes project_config_path.read, "project_id = \"main\""
+
+    system bin/"reviewloop", "--config", project_config_path,
       "paper", "add",
       "--paper-id", "main",
       "--pdf-path", testpath/"paper.pdf",
       "--backend", "stanford",
       "--no-submit-prompt"
 
-    config_path = testpath/".config/reviewloop/reviewloop.toml"
-    assert_path_exists config_path
-    assert_includes config_path.read, "[providers.stanford]"
+    project_config = project_config_path.read
+    assert_includes project_config, "id = \"main\""
+    assert_includes project_config, "backend = \"stanford\""
 
-    output = shell_output("#{bin}/reviewloop --config #{testpath/"reviewloop-test.toml"} status --json")
-    assert_equal "[]\n", output
+    output = shell_output("#{bin}/reviewloop --config #{project_config_path} status --json")
+    assert_match(/\[\]\s*\z/, output)
     assert_path_exists testpath/".review_loop/reviewloop.db"
   end
 end
