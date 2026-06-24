@@ -1,8 +1,8 @@
 class HanziSort < Formula
   desc "Sort Chinese text by pinyin or stroke count"
   homepage "https://github.com/Acture/hanzi-sort"
-  url "https://github.com/Acture/hanzi-sort/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "b08b83f9bac7628d1404fa93358f057dc5ff5b729352fc36069fb0f2c7e22e3b"
+  url "https://github.com/Acture/hanzi-sort/archive/refs/tags/v0.2.2.tar.gz"
+  sha256 "8ce026f5e4af10c49db4203996e83725914a9a1fee6942879236c7009cd61687"
   license "AGPL-3.0-only"
 
   livecheck do
@@ -13,22 +13,16 @@ class HanziSort < Formula
   depends_on "rust" => :build
 
   def install
-    system "cargo", "install", *std_cargo_args
-
-    legacy_binary = bin/"pinyin-sort"
-    # v0.1.1 still installs the old executable name from the tagged source.
-    if legacy_binary.exist? && !(bin/"hanzi-sort").exist?
-      legacy_binary.rename bin/"hanzi-sort"
-    end
+    system "cargo", "install", *std_cargo_args, "--all-features"
   end
 
   test do
-    pinyin_output = shell_output("#{bin}/hanzi-sort -t 张三 李四 王五")
+    output = shell_output("#{bin}/hanzi-sort -t 张三 李四 王五")
 
-    assert_match "李四", pinyin_output
-    assert_match "王五", pinyin_output
-    assert_match "张三", pinyin_output
-    assert_operator pinyin_output.index("李四"), :<, pinyin_output.index("王五")
-    assert_operator pinyin_output.index("王五"), :<, pinyin_output.index("张三")
+    assert_match "李四", output
+    assert_match "王五", output
+    assert_match "张三", output
+    assert_operator output.index("李四"), :<, output.index("王五")
+    assert_operator output.index("王五"), :<, output.index("张三")
   end
 end
