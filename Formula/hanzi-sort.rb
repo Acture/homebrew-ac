@@ -1,8 +1,8 @@
 class HanziSort < Formula
   desc "Sort Chinese text by pinyin or stroke count"
   homepage "https://github.com/Acture/hanzi-sort"
-  url "https://github.com/Acture/hanzi-sort/archive/refs/tags/v0.2.2.tar.gz"
-  sha256 "8ce026f5e4af10c49db4203996e83725914a9a1fee6942879236c7009cd61687"
+  url "https://github.com/Acture/hanzi-sort/archive/refs/tags/v0.2.3.tar.gz"
+  sha256 "79498719f932410aca95c18adc3bdc0567fc87f7b4d7d9952bfe4a9ffbbe8e77"
   license "AGPL-3.0-only"
 
   livecheck do
