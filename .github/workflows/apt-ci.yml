@@ -3,9 +3,9 @@ name: APT source CI
 on:
   push:
     branches: ["**"]
-    paths: ["packaging/apt/**", ".github/workflows/apt-*.yml"]
+    paths: ["packaging/apt/**", ".github/workflows/apt-*.yml", "docs/apt-source.md"]
   pull_request:
-    paths: ["packaging/apt/**", ".github/workflows/apt-*.yml"]
+    paths: ["packaging/apt/**", ".github/workflows/apt-*.yml", "docs/apt-source.md"]
   workflow_dispatch:
 
 permissions:

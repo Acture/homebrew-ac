@@ -60,11 +60,23 @@ contract (`notes/python-service-distribution.md`) records installed
 entry points, persistent service paths, Python runtime compatibility, `.deb`
 release artifacts and a shared signed apt feed. RPM is a later extension.
 
-The current public `main` branches were rechecked: neither service has a complete
-installable package or a declared license; both deployments depend on their source
-checkout. trapi2litellm still restricts Python to 3.13. This update changes the
-packaging requirements only; no service source, package, apt feed or deployment
-was created or published.
+On 2026-10-04, devtunnel-service's Python `main` has accepted wheel, sdist and
+`.deb` artifacts, including Debian/Ubuntu installation and upgrade validation on
+amd64 and arm64. Its [product CI passed](https://github.com/Acture/devtunnel-service/actions/runs/37183978494)
+for `a78fc33`; the pinned `v0.1.0` tag and GitHub Release remain unpublished.
+
+The signed APT implementation is prepared on `feature/oss-33-apt-source`, tracked
+in [OSS-33](https://linear.app/acturea/issue/OSS-33). Its [source CI passed](https://github.com/Acture/homebrew-ac/actions/runs/37190015970),
+checking real Signed-By installation, upgrade, tamper rejection and architecture
+filtering on the same distribution/architecture matrix. GitHub Pages, a dedicated
+archive signing key and the required Actions configuration are established.
+The [APT source guide](apt-source.md) records the reviewed public key and setup.
+
+This source is not deployed yet. Publishing the pinned upstream release, merging
+the implementation and passing both publication and live HTTPS acceptance are
+required before advertising `apt install devtunnel-service`. Adding trapi2litellm
+requires its own accepted release packages; Homebrew service formulae remain a
+separate unfinished part of OSS-33. Official distribution inclusion is deferred.
 
 ## Repository layout
 

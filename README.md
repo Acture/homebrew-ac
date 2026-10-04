@@ -44,6 +44,13 @@ runtime namespace and ship a complete, signed App bundle with a fixed download
 URL and checksum. The template is outside `Casks/` so Homebrew does not advertise
 an unavailable package. Stepwise and Foch desktop apps also await release assets.
 
+## Debian and Ubuntu
+
+A signed APT source for Debian 13 and Ubuntu 24.04, on amd64 and arm64, is
+prepared for GitHub Pages. Its initial devtunnel-service release and first
+deployment are pending. See the [APT source guide](docs/apt-source.md) for the
+reviewed signing fingerprint, publication gates and installation commands.
+
 ## Examples
 
 ```sh
@@ -70,7 +77,7 @@ Repository layout:
 ```text
 Formula/    Active Homebrew formulae
 Aliases/    Homebrew formula aliases
-packaging/  Release templates and shared download strategies
+packaging/  Release templates, shared download strategies and APT source tooling
 scripts/    Maintenance tools
 docs/       Public documentation, verification status, examples and preview assets
 notes/      Optional private review and planning notes
