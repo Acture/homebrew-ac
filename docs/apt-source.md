@@ -1,9 +1,16 @@
 # Acture APT source
 
 This is the implementation for the shared Debian 13 / Ubuntu 24.04 source,
-covering amd64 and arm64. It is not live yet. The initial proposed URL is
-`https://acture.github.io/homebrew-ac/`; the production signing fingerprint is
-still to be established. Official distribution inclusion is a later task.
+covering amd64 and arm64. It is not live yet. GitHub Pages is configured at
+`https://acture.github.io/homebrew-ac/`. Official distribution inclusion is a
+later task.
+
+The dedicated RSA 3072 archive key has the full fingerprint
+`D95016A338D84A5C48B48405DEE6329179875340` and expires on 2028-10-03.
+The [reviewed public key](../packaging/apt/acture-archive-keyring.asc) is committed
+here; private-key material and its passphrase stay outside Git. Renew or rotate
+the archive key before expiry, publishing the new fingerprint before changing
+the signing identity.
 
 `packaging/apt/releases.json` is the approved upstream release ledger. Each
 entry pins a repository, tag, full commit, Debian version and architectures.
@@ -29,8 +36,12 @@ runs so the source does not expire.
 
 The workflow installs from the signed snapshot inside fresh Debian and Ubuntu
 containers before deploying a complete GitHub Pages artifact. A failed build
-or install leaves the last deployed site intact. GitHub Pages has a 1 GB site
-limit; move to object storage before approaching it.
+or pre-deployment install leaves the last deployed site intact. After deployment,
+a separate four-target HTTPS acceptance workflow installs from the actual
+endpoint using the accepted snapshot's public key. A failure there requires
+investigation; it does not automatically roll back Pages. Confirm both the
+publication and live acceptance runs before advertising the source. GitHub Pages
+has a 1 GB site limit; move to object storage before approaching it.
 
 Before the first deployment:
 
@@ -53,24 +64,27 @@ the build does not create a production key or enable Pages automatically.
 Private keys are imported only into the runner's temporary GnuPG directory and
 removed after the build. Signing requires the configured full fingerprint.
 
-The initial URI, upstream first release, key generation, secret configuration
-and Pages activation are pending. The public-key bootstrap must include the
-reviewed fingerprint independently of the downloaded key's own description.
+As of 2026-10-04, the signing identity, Actions secrets/variables and Pages
+Actions source are configured. The pinned upstream release, merging this
+implementation and the first deployment remain pending. The public-key
+bootstrap includes the reviewed fingerprint independently of the downloaded
+key's own description.
 
 ## User installation after publication
 
 These commands are for **after** the live URL and fingerprint are confirmed.
-Use the documented URI and reviewed fingerprint in place of the placeholders:
+The fingerprint is pinned to the reviewed archive key:
 
 ```fish
 set apt_uri https://acture.github.io/homebrew-ac
-set expected_fingerprint REPLACE_WITH_REVIEWED_FINGERPRINT
+set expected_fingerprint D95016A338D84A5C48B48405DEE6329179875340
+sudo apt update; or exit 1
+sudo apt install -y ca-certificates curl gnupg; or exit 1
 curl -fsSL "$apt_uri/acture-archive-keyring.asc" -o acture-archive-keyring.asc; or exit 1
 set downloaded_fingerprint (gpg --batch --with-colons --show-keys acture-archive-keyring.asc | awk -F: '$1 == "fpr" { print $10; exit }')
 test "$downloaded_fingerprint" = "$expected_fingerprint"; or exit 1
 sudo install -D -m 0644 acture-archive-keyring.asc /etc/apt/keyrings/acture-archive-keyring.asc; or exit 1
-curl -fsSL "$apt_uri/acture.sources" -o acture.sources; or exit 1
-sudo install -m 0644 acture.sources /etc/apt/sources.list.d/acture.sources; or exit 1
+printf 'Types: deb\nURIs: %s/\nSuites: stable\nComponents: main\nArchitectures: amd64 arm64\nSigned-By: /etc/apt/keyrings/acture-archive-keyring.asc\n' "$apt_uri" | sudo tee /etc/apt/sources.list.d/acture.sources >/dev/null; or exit 1
 sudo apt update; or exit 1
 sudo apt install devtunnel-service
 ```

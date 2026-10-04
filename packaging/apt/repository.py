@@ -261,15 +261,20 @@ def key_fingerprint(path: Path) -> str:
     return fingerprints[0]
 
 
+def repository_uri(uri: str) -> str:
+    if re.fullmatch(r"https://[A-Za-z0-9.-]+(?:/[A-Za-z0-9._~-]+)*/?", uri) is None:
+        raise ValueError(
+            "repository URI must be an HTTPS URL without credentials or query parameters"
+        )
+    return uri.rstrip("/") + "/"
+
+
 def build(
     inputs: Path, output: Path, fingerprint: str, uri: str, previous: Path | None = None
 ) -> None:
     if re.fullmatch(r"[A-F0-9]{40}", fingerprint) is None:
         raise ValueError("a full uppercase signing-key fingerprint is required")
-    if re.fullmatch(r"https://[A-Za-z0-9.-]+(?:/[A-Za-z0-9._~-]+)*/?", uri) is None:
-        raise ValueError(
-            "repository URI must be an HTTPS URL without credentials or query parameters"
-        )
+    uri = repository_uri(uri)
     if output.exists():
         raise ValueError("output must not exist; build a new snapshot")
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -365,7 +370,7 @@ def build(
                 data=data,
             )
         (stage / "acture.sources").write_text(
-            f"Types: deb\nURIs: {uri.rstrip('/')}/\nSuites: stable\nComponents: main\n"
+            f"Types: deb\nURIs: {uri}\nSuites: stable\nComponents: main\n"
             "Architectures: amd64 arm64\nSigned-By: /etc/apt/keyrings/acture-archive-keyring.asc\n"
         )
         (stage / "fingerprint.txt").write_text(fingerprint + "\n")

@@ -18,7 +18,7 @@ apt-get update -qq
 apt-get install -y -qq --no-install-recommends ca-certificates gnupg
 install -D -m 0644 /repository/acture-archive-keyring.asc /etc/apt/keyrings/acture-archive-keyring.asc
 gpg --batch --with-colons --show-keys /etc/apt/keyrings/acture-archive-keyring.asc | grep -q \"fpr:::::::::$FINGERPRINT:\"
-printf 'Types: deb\\nURIs: file:/repository/\\nSuites: stable\\nComponents: main\\nSigned-By: /etc/apt/keyrings/acture-archive-keyring.asc\\n' >/etc/apt/sources.list.d/acture.sources
+printf 'Types: deb\\nURIs: %s\\nSuites: stable\\nComponents: main\\nSigned-By: /etc/apt/keyrings/acture-archive-keyring.asc\\n' "$REPOSITORY_URI" >/etc/apt/sources.list.d/acture.sources
 apt-get update --error-on=any
 apt-get install -y --no-install-recommends \"$PACKAGE\"
 \"$PACKAGE\" --version
@@ -26,12 +26,13 @@ apt-get install -y --no-install-recommends \"$PACKAGE\"
 """
 
 
-def verify(site: Path, package: str, images: list[str]) -> None:
+def verify(site: Path, package: str, images: list[str], uri: str | None = None) -> None:
     if re.fullmatch(r"devtunnel-service|trapi2litellm", package) is None:
         raise ValueError("package must be one of the approved service commands")
     fingerprint = (site / "fingerprint.txt").read_text().strip()
     if repository.key_fingerprint(site / "acture-archive-keyring.asc") != fingerprint:
         raise ValueError("snapshot key does not match its published fingerprint")
+    source_uri = "file:/repository/" if uri is None else repository.repository_uri(uri)
     for image in images:
         LOG.info("Verifying %s on %s", package, image)
         subprocess.run(
@@ -45,6 +46,8 @@ def verify(site: Path, package: str, images: list[str]) -> None:
                 f"FINGERPRINT={fingerprint}",
                 "--env",
                 f"PACKAGE={package}",
+                "--env",
+                f"REPOSITORY_URI={source_uri}",
                 image,
                 "sh",
                 "-c",
@@ -62,8 +65,13 @@ def main() -> None:
     parser.add_argument(
         "--image", choices=("debian:13", "ubuntu:24.04"), action="append"
     )
+    parser.add_argument(
+        "--uri", help="verify the live HTTPS source using the snapshot key"
+    )
     args = parser.parse_args()
-    verify(args.site, args.package, args.image or ["debian:13", "ubuntu:24.04"])
+    verify(
+        args.site, args.package, args.image or ["debian:13", "ubuntu:24.04"], args.uri
+    )
 
 
 if __name__ == "__main__":
