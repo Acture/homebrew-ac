@@ -111,8 +111,8 @@ the link integrity check and strict full-tap audit pass, all nine Ruby files
 pass Homebrew style, workflow lint passes, and public local links resolve.
 A Git fixture also verifies that staging detects updates through the physical
 formula path, while a pathspec through the directory symlink does not.
-Upstream release workflows must use the tracked path before this layout is
-published on the tap's default branch. This does not establish full installation
+Upstream release workflows must use the tracked path when updating this layout;
+their path adaptations remain pending. This does not establish full installation
 acceptance; the existing installation matrix still has separate failures.
 
 README links, template references, Formula `require_relative` paths and the
