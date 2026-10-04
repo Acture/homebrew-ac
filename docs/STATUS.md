@@ -40,7 +40,7 @@ Initially prepared locally, then delivered through the PRs below:
   formula. Infer its version from the versioned source archive URL.
 
 The user confirmed that Stepwise/Foch releases are imminent. Stable source
-formula templates are prepared in [packaging/templates/Formula](../packaging/templates/Formula/), and
+formula templates are prepared in [packaging/homebrew/templates/Formula](../packaging/homebrew/templates/Formula/), and
 will be activated only after verifying real tags, URLs and checksums. Foch must
 use its release source tarball with public submodules, not a GitHub tag archive.
 Its existing sync workflow requires `HOMEBREW_TAP_REPO` and a write token. The
@@ -90,6 +90,30 @@ On 2026-10-04, documentation assets, examples and this status file moved under
 `docs/`. Release templates and the shared download strategy moved under
 `packaging/`. Active `Formula/` and `Aliases/` remain at the tap root; a future
 active cask will use a top-level `Casks/` directory.
+
+The subsequent channel layout puts the actual formulae, aliases, download strategy
+and inactive templates in `packaging/homebrew/`, alongside `packaging/apt/`.
+Top-level `Formula` and `Aliases` are relative directory symlinks. Foch and
+Stepwise resolve their helper from the actual formula location, so loading through
+either the symlink or its target uses the same file. Release automation may
+continue writing through `Formula/`, but staging and diff checks must use the
+tracked `packaging/homebrew/Formula/` path.
+
+CI validates the directory links and continues auditing and testing the full tap.
+Homebrew's Git path classification does not recognize the nested source paths;
+its update report and changed-only audit/test-bot selection can omit these changes.
+Full-tap checks are required for this layout. A future active `Casks` directory
+will use the same approach; no cask is enabled by this move.
+
+Channel-layout checks passed locally: seven formulae load through both the
+Homebrew entry and the physical directory, both aliases resolve correctly,
+the link integrity check and strict full-tap audit pass, all nine Ruby files
+pass Homebrew style, workflow lint passes, and public local links resolve.
+A Git fixture also verifies that staging detects updates through the physical
+formula path, while a pathspec through the directory symlink does not.
+Upstream release workflows must use the tracked path before this layout is
+published on the tap's default branch. This does not establish full installation
+acceptance; the existing installation matrix still has separate failures.
 
 README links, template references, Formula `require_relative` paths and the
 preview generator's output directory were updated. The preview generator's font

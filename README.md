@@ -1,12 +1,13 @@
 <div align="center">
   <p><sub>Acture / homebrew-ac</sub></p>
   <p>
-    <a href="https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml"><img src="https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml/badge.svg?branch=master" alt="CI"></a>
+    <a href="https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml"><img src="https://github.com/Acture/homebrew-ac/actions/workflows/brew-ci.yml/badge.svg?branch=master" alt="Homebrew CI"></a>
+    <a href="https://github.com/Acture/homebrew-ac/actions/workflows/apt-live.yml"><img src="https://github.com/Acture/homebrew-ac/actions/workflows/apt-live.yml/badge.svg?branch=master" alt="APT acceptance"></a>
     <a href="LICENSE"><img src="https://img.shields.io/github/license/Acture/homebrew-ac" alt="License"></a>
     <img src="https://img.shields.io/badge/platform-macOS%20%2B%20Linux-C67A3C" alt="Platforms">
   </p>
-  <h1>Acture software on Homebrew.</h1>
-  <p>A shared tap for command-line tools and future macOS apps.</p>
+  <h1>Acture software distribution.</h1>
+  <p>Homebrew packages and a signed APT source for Acture software.</p>
   <p><img src="docs/assets/hero-preview.png" alt="Acture Homebrew Tap hero preview" width="980"></p>
 </div>
 
@@ -27,7 +28,7 @@ brew install acture/ac/scriptmark
 | [ScriptMark](https://github.com/Acture/scriptmark) | Grade student programming assignments | Stable binary | `brew install acture/ac/scriptmark` |
 | [Stepwise](https://github.com/Acture/Stepwise) | Practice Python evaluation and propositional logic | Development source | `brew install --HEAD acture/ac/stepwise` |
 | [Foch](https://github.com/Acture/foch) | Analyze and merge EU4 mods; run an LSP server | Development source | `brew install --HEAD acture/ac/foch` |
-| [Teaser](https://github.com/Acture/teaser) | Native macOS workspace and panel manager | Pending cask | See the [cask template](packaging/templates/Casks/teaser.rb.in) |
+| [Teaser](https://github.com/Acture/teaser) | Native macOS workspace and panel manager | Pending cask | See the [cask template](packaging/homebrew/templates/Casks/teaser.rb.in) |
 
 ScriptMark tracks the published v0.2.0 assets, with their release SHA256 digests,
 and includes Python 3.13 for the Python execution backend. Its upstream development
@@ -76,19 +77,31 @@ a passing build; current verification is recorded in [docs/STATUS.md](docs/STATU
 Repository layout:
 
 ```text
-Formula/    Active Homebrew formulae
-Aliases/    Homebrew formula aliases
-packaging/  Release templates, shared download strategies and APT source tooling
-scripts/    Maintenance tools
-docs/       Public documentation, verification status, examples and preview assets
-notes/      Optional private review and planning notes
+Formula -> packaging/homebrew/Formula
+Aliases -> packaging/homebrew/Aliases
+packaging/
+  homebrew/  Formulae, aliases, download strategies and release templates
+  apt/       Signed APT source tooling and approved release inputs
+scripts/     Maintenance tools
+docs/        Public documentation, verification status, examples and preview assets
+notes/       Optional private review and planning notes
 ```
 
-Inactive templates stay in `packaging/templates/`. Activate verified releases in
-`Formula/` or a top-level `Casks/` directory. Preview generation writes to
-`docs/assets/`.
+Homebrew files are maintained in `packaging/homebrew/`. The top-level relative
+symlinks preserve Homebrew's discovery paths without duplicating files. Release
+automation can write through `Formula/`, but Git staging, diff checks and commits
+must use `packaging/homebrew/Formula/`; Git does not traverse directory symlinks
+in pathspecs. Inactive templates stay in
+`packaging/homebrew/templates/`; enable a verified cask in
+`packaging/homebrew/Casks/` and add a top-level `Casks` symlink when needed.
+Preview generation writes to `docs/assets/`.
 
-Keep formula logic in this tap. Upstream release automation should update versioned
+CI checks the links and audits every active formula on each push. Homebrew's
+Git change detection does not classify paths under `packaging/homebrew/Formula/`
+as formula changes, so use full-tap checks instead of `brew audit --changed` or
+test-bot's changed-formula selection. Its update report can also omit these changes.
+
+Keep formula logic in this repository. Upstream release automation should update versioned
 URLs and checksums without replacing custom tests. Fixes to that automation belong
 in pull requests to the upstream repositories.
 
@@ -99,4 +112,4 @@ Notes editing and submission follow the central vault's
 
 ## License
 
-This tap is [AGPL-3.0-only](LICENSE). Each packaged application retains its own license.
+This repository is [AGPL-3.0-only](LICENSE). Each packaged application retains its own license.

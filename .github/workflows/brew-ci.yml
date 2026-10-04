@@ -32,8 +32,14 @@ jobs:
       - name: Trust this tap
         run: brew trust --tap acture/ac
 
+      - name: Check Homebrew directory links
+        run: brew ruby packaging/homebrew/check_layout.rb
+
       - name: Check style
         run: brew style acture/ac
+
+      - name: Check helper style
+        run: brew style packaging/homebrew/lib/public_submodules_git_download_strategy.rb packaging/homebrew/check_layout.rb
 
       - name: Audit tap
         run: brew audit --strict --display-filename --tap acture/ac

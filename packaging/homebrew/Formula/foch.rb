@@ -1,4 +1,4 @@
-require_relative "../packaging/lib/public_submodules_git_download_strategy"
+require (Pathname(__FILE__).realpath.parent.parent/"lib/public_submodules_git_download_strategy").to_s
 
 class Foch < Formula
   desc "EU4 mod analysis, merging and language server toolkit"
