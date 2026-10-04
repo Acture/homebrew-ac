@@ -63,20 +63,26 @@ release artifacts and a shared signed apt feed. RPM is a later extension.
 On 2026-10-04, devtunnel-service's Python `main` has accepted wheel, sdist and
 `.deb` artifacts, including Debian/Ubuntu installation and upgrade validation on
 amd64 and arm64. Its [product CI passed](https://github.com/Acture/devtunnel-service/actions/runs/37183978494)
-for `a78fc33`; the pinned `v0.1.0` tag and GitHub Release remain unpublished.
+for `a78fc33`. The pinned [v0.1.0 Release](https://github.com/Acture/devtunnel-service/releases/tag/v0.1.0)
+is now public with wheel, sdist, `.deb` and `SHA256SUMS`; its
+[tag and release CI](https://github.com/Acture/devtunnel-service/actions/runs/37190627951)
+also passed.
 
-The signed APT implementation is prepared on `feature/oss-33-apt-source`, tracked
-in [OSS-33](https://linear.app/acturea/issue/OSS-33). Its [source CI passed](https://github.com/Acture/homebrew-ac/actions/runs/37190015970),
+The signed APT implementation is merged into `master`, tracked in
+[OSS-33](https://linear.app/acturea/issue/OSS-33). Its [master source CI passed](https://github.com/Acture/homebrew-ac/actions/runs/37190605977),
 checking real Signed-By installation, upgrade, tamper rejection and architecture
 filtering on the same distribution/architecture matrix. GitHub Pages, a dedicated
 archive signing key and the required Actions configuration are established.
 The [APT source guide](apt-source.md) records the reviewed public key and setup.
 
-This source is not deployed yet. Publishing the pinned upstream release, merging
-the implementation and passing both publication and live HTTPS acceptance are
-required before advertising `apt install devtunnel-service`. Adding trapi2litellm
-requires its own accepted release packages; Homebrew service formulae remain a
-separate unfinished part of OSS-33. Official distribution inclusion is deferred.
+The [first publication](https://github.com/Acture/homebrew-ac/actions/runs/37190797354)
+and [live HTTPS acceptance](https://github.com/Acture/homebrew-ac/actions/runs/37190864275)
+passed. Each target installed the product by name from
+`https://acture.github.io/homebrew-ac/` using the accepted archive key; the served
+key and signed InRelease were also compared with the accepted snapshot and
+independently verified. Adding trapi2litellm requires its own accepted release
+packages; Homebrew service formulae remain a separate unfinished part of OSS-33.
+Official distribution inclusion is deferred.
 
 ## Repository layout
 

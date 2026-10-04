@@ -46,10 +46,11 @@ an unavailable package. Stepwise and Foch desktop apps also await release assets
 
 ## Debian and Ubuntu
 
-A signed APT source for Debian 13 and Ubuntu 24.04, on amd64 and arm64, is
-prepared for GitHub Pages. Its initial devtunnel-service release and first
-deployment are pending. See the [APT source guide](docs/apt-source.md) for the
-reviewed signing fingerprint, publication gates and installation commands.
+The signed [APT source](https://acture.github.io/homebrew-ac/) supports Debian 13
+and Ubuntu 24.04 on amd64 and arm64. Register it once using the
+[APT source guide](docs/apt-source.md#user-installation), then run
+`sudo apt install devtunnel-service`. The guide includes the reviewed signing
+fingerprint and verification results.
 
 ## Examples
 

@@ -1,9 +1,8 @@
 # Acture APT source
 
-This is the implementation for the shared Debian 13 / Ubuntu 24.04 source,
-covering amd64 and arm64. It is not live yet. GitHub Pages is configured at
-`https://acture.github.io/homebrew-ac/`. Official distribution inclusion is a
-later task.
+The shared Debian 13 / Ubuntu 24.04 source is live on GitHub Pages at
+`https://acture.github.io/homebrew-ac/`, covering amd64 and arm64. Official
+distribution inclusion is a later task.
 
 The dedicated RSA 3072 archive key has the full fingerprint
 `D95016A338D84A5C48B48405DEE6329179875340` and expires on 2028-10-03.
@@ -14,9 +13,8 @@ the signing identity.
 
 `packaging/apt/releases.json` is the approved upstream release ledger. Each
 entry pins a repository, tag, full commit, Debian version and architectures.
-The first entry expects devtunnel-service v0.1.0 at a78fc33. That tag and release
-must be published before the source can fetch it. Add trapi2litellm only after
-its distribution packages have passed their own acceptance.
+The first entry consumes the published devtunnel-service v0.1.0 at a78fc33. Add
+trapi2litellm only after its distribution packages have passed their own acceptance.
 
 The builder downloads the `.deb` assets and `SHA256SUMS` from each stable
 GitHub Release, checks the tag's commit and package checksums, and compares
@@ -56,8 +54,9 @@ Before the first deployment:
 5. Enable GitHub Pages with the Actions publishing source and review the
    `github-pages` environment's deployment protections.
 6. Merge the reviewed implementation, then run `Publish APT source`.
-7. Verify signature checking, installation and upgrade through the actual HTTPS
-   endpoint on each target distribution/architecture before advertising it.
+7. Confirm the separate live HTTPS acceptance passes on each target
+   distribution/architecture before advertising the source. Repository CI and
+   upstream package acceptance cover signed upgrades.
 
 Production key generation and secret configuration are deliberate setup actions;
 the build does not create a production key or enable Pages automatically.
@@ -65,15 +64,16 @@ Private keys are imported only into the runner's temporary GnuPG directory and
 removed after the build. Signing requires the configured full fingerprint.
 
 As of 2026-10-04, the signing identity, Actions secrets/variables and Pages
-Actions source are configured. The pinned upstream release, merging this
-implementation and the first deployment remain pending. The public-key
-bootstrap includes the reviewed fingerprint independently of the downloaded
-key's own description.
+Actions source are configured. The pinned upstream release is published and
+the implementation is merged. The [first publication](https://github.com/Acture/homebrew-ac/actions/runs/37190797354)
+and [live HTTPS acceptance](https://github.com/Acture/homebrew-ac/actions/runs/37190864275)
+both passed. The public-key bootstrap includes the reviewed fingerprint
+independently of the downloaded key's own description.
 
-## User installation after publication
+## User installation
 
-These commands are for **after** the live URL and fingerprint are confirmed.
-The fingerprint is pinned to the reviewed archive key:
+Register the source once, then install by package name. The fingerprint is
+pinned to the reviewed archive key:
 
 ```fish
 set apt_uri https://acture.github.io/homebrew-ac
