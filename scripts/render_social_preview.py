@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
+from math import ceil
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
 
-ROOT = Path(__file__).resolve().parents[1]
-ASSETS = ROOT / "assets"
-ASSETS.mkdir(exist_ok=True)
+ROOT: Path = Path(__file__).resolve().parents[1]
+ASSETS: Path = ROOT / "docs" / "assets"
+ASSETS.mkdir(parents=True, exist_ok=True)
 
 
 def load_font(size: int, *, serif: bool = False, mono: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -50,15 +51,15 @@ def draw_rotated_word(
     base: Image.Image,
     text: str,
     xy: tuple[int, int],
-    font: ImageFont.ImageFont,
+    font: ImageFont.FreeTypeFont | ImageFont.ImageFont,
     fill: tuple[int, int, int, int],
     angle: int = 0,
 ) -> None:
     layer = Image.new("RGBA", base.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
     bbox = draw.textbbox((0, 0), text, font=font)
-    width = bbox[2] - bbox[0]
-    height = bbox[3] - bbox[1]
+    width: int = ceil(bbox[2] - bbox[0])
+    height: int = ceil(bbox[3] - bbox[1])
 
     text_img = Image.new("RGBA", (width + 16, height + 16), (0, 0, 0, 0))
     text_draw = ImageDraw.Draw(text_img)
@@ -74,7 +75,7 @@ def rounded_badge(
     x: int,
     y: int,
     *,
-    font: ImageFont.ImageFont,
+    font: ImageFont.FreeTypeFont | ImageFont.ImageFont,
     fill: tuple[int, int, int],
     text_fill: tuple[int, int, int],
 ) -> None:

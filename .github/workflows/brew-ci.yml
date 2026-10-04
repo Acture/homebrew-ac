@@ -10,41 +10,59 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 env:
   HOMEBREW_NO_AUTO_UPDATE: 1
 
 jobs:
   audit:
     runs-on: macos-14
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
       - name: Set up Homebrew
         id: setup-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@1f8e202ffddf94def7f42f6fa3a482e821489f9c
+        with:
+          stable: true
+
+      - name: Trust this tap
+        run: brew trust --tap acture/ac
+
+      - name: Check style
+        run: brew style acture/ac
 
       - name: Audit tap
         run: brew audit --strict --display-filename --tap acture/ac
 
+      - name: Discover formula install matrix
+        id: matrix
+        run: |
+          brew info --json=v2 --formula "$(brew --repository acture/ac)"/Formula/*.rb |
+            jq -ec '{include: [.formulae[] as $formula | ["ubuntu-latest", "macos-14"][] |
+              {os: ., formula: ("acture/ac/" + $formula.name), head: ($formula.versions.stable == null)}]} |
+              select(.include | length > 0)' |
+            sed 's/^/matrix=/' >> "$GITHUB_OUTPUT"
+
   install-test:
+    needs: audit
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-14
-        formula:
-          # d2typ is temporarily excluded while its upstream build issue is being fixed.
-          - glyphweave
-          - hanzi-sort
-          - reviewloop
+      matrix: ${{ fromJSON(needs.audit.outputs.matrix) }}
 
     steps:
       - name: Set up Homebrew
         id: setup-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@1f8e202ffddf94def7f42f6fa3a482e821489f9c
+        with:
+          stable: true
 
       - name: Install formula
-        run: brew install --build-from-source "acture/ac/${{ matrix.formula }}"
+        run: brew install --build-from-source ${{ matrix.head && '--HEAD' || '' }} "${{ matrix.formula }}"
 
       - name: Test formula
         run: brew test "${{ matrix.formula }}"

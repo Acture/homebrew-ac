@@ -1,0 +1,20 @@
+# Activate as Formula/stepwise.rb only after verifying the public release and checksum.
+class Stepwise < Formula
+  desc "Interactive Python evaluation and propositional logic exercises"
+  homepage "https://github.com/Acture/Stepwise"
+  url "https://github.com/Acture/Stepwise/archive/refs/tags/v@VERSION@.tar.gz"
+  sha256 "@SHA256@"
+  license "AGPL-3.0-only"
+
+  depends_on "rust" => :build
+
+  def install
+    system "cargo", "install", *std_cargo_args(path: ".")
+  end
+
+  test do
+    assert_match "完成：7", shell_output("#{bin}/stepwise --python '1 + 2 * 3' --trace")
+    assert_equal "等价：所有赋值下真值相同。\n",
+      shell_output("#{bin}/stepwise --logic 'P & Q' --equivalent 'Q & P'")
+  end
+end
