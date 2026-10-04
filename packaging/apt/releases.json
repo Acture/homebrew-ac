@@ -1,0 +1,10 @@
+[
+  {
+    "repository": "Acture/devtunnel-service",
+    "package": "devtunnel-service",
+    "tag": "v0.1.0",
+    "commit": "a78fc3367ffdce9d98beeaefb9347b2d2842a697",
+    "version": "0.1.0-1",
+    "architectures": ["all"]
+  }
+]

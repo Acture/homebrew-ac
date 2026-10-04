@@ -1,0 +1,14 @@
+[project]
+name = "ac-apt-source-tools"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["ruff", "ty"]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ty.environment]
+python-version = "3.10"

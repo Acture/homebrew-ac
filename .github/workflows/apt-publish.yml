@@ -1,0 +1,118 @@
+name: Publish APT source
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Renew the signed metadata before its 14-day expiry.
+    - cron: "17 4 * * 1"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: apt-source-publication
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install APT build tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends fish apt-utils dpkg-dev gnupg
+      - name: Check production configuration and import signing key
+        shell: fish {0}
+        run: |
+          test -n "$APT_SIGNING_FINGERPRINT"; or exit 1
+          test -n "$APT_SIGNING_KEY"; or exit 1
+          test -n "$APT_REPOSITORY_URI"; or exit 1
+          install -d -m 0700 "$GNUPGHOME"
+          printf '%s' "$APT_SIGNING_KEY" | gpg --batch --import; or exit 1
+        env:
+          GNUPGHOME: ${{ runner.temp }}/apt-gnupg
+          APT_SIGNING_KEY: ${{ secrets.APT_SIGNING_KEY }}
+          APT_SIGNING_FINGERPRINT: ${{ vars.APT_SIGNING_FINGERPRINT }}
+          APT_REPOSITORY_URI: ${{ vars.APT_REPOSITORY_URI }}
+      - name: Fetch and verify approved release inputs
+        run: python3 packaging/apt/repository.py fetch --releases packaging/apt/releases.json --output dist/apt-inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Restore the last published snapshot
+        shell: fish {0}
+        run: |
+          set previous_run (gh run list --repo "$GITHUB_REPOSITORY" --workflow apt-publish.yml --branch master --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty'); or exit 1
+          if test -n "$previous_run"
+            gh run download "$previous_run" --repo "$GITHUB_REPOSITORY" --name apt-repository --dir dist/previous; or exit 1
+          end
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Build and sign the complete snapshot
+        shell: fish {0}
+        run: |
+          set previous
+          if test -d dist/previous
+            set previous --previous dist/previous
+          end
+          python3 packaging/apt/repository.py build --inputs dist/apt-inputs --output dist/apt-site --fingerprint "$APT_SIGNING_FINGERPRINT" --uri "$APT_REPOSITORY_URI" $previous
+        env:
+          GNUPGHOME: ${{ runner.temp }}/apt-gnupg
+          APT_SIGNING_FINGERPRINT: ${{ vars.APT_SIGNING_FINGERPRINT }}
+          APT_SIGNING_PASSPHRASE: ${{ secrets.APT_SIGNING_PASSPHRASE }}
+          APT_REPOSITORY_URI: ${{ vars.APT_REPOSITORY_URI }}
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: apt-repository
+          path: dist/apt-site/
+          retention-days: 90
+          if-no-files-found: error
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: dist/apt-site
+      - name: Remove imported private-key material
+        if: always()
+        shell: fish {0}
+        run: |
+          gpgconf --homedir "$GNUPGHOME" --kill all
+          python3 -c 'import os, shutil; shutil.rmtree(os.environ["GNUPGHOME"], ignore_errors=True)'
+        env:
+          GNUPGHOME: ${{ runner.temp }}/apt-gnupg
+
+  acceptance:
+    needs: build
+    name: accept (${{ matrix.image }}, ${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["debian:13", "ubuntu:24.04"]
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: apt-repository
+          path: dist/apt-site
+      - name: Install the signed product package by name
+        run: python3 packaging/apt/verify.py dist/apt-site devtunnel-service --image "$IMAGE"
+        env:
+          IMAGE: ${{ matrix.image }}
+
+  deploy:
+    needs: [build, acceptance]
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the verified snapshot
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

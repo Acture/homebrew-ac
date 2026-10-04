@@ -1,0 +1,45 @@
+name: APT source CI
+
+on:
+  push:
+    branches: ["**"]
+    paths: ["packaging/apt/**", ".github/workflows/apt-*.yml"]
+  pull_request:
+    paths: ["packaging/apt/**", ".github/workflows/apt-*.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - run: uv run --directory packaging/apt --locked ruff check .
+      - run: uv run --directory packaging/apt --locked ruff format --check .
+      - run: uv run --directory packaging/apt --locked ty check .
+
+  apt:
+    name: apt (${{ matrix.image }}, ${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["debian:13", "ubuntu:24.04"]
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Signed install, upgrade, tamper rejection and architecture filtering
+        run: >-
+          docker run --rm --volume "$PWD:/src:ro" --workdir /src "$IMAGE" sh -ec
+          'apt-get update -qq;
+          apt-get install -y -qq --no-install-recommends python3 gnupg dpkg-dev apt-utils ca-certificates;
+          python3 -m unittest discover --start-directory packaging/apt -v'
+        env:
+          IMAGE: ${{ matrix.image }}
