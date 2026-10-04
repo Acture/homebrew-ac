@@ -11,6 +11,8 @@ from pathlib import Path
 
 import repository
 
+LOG: logging.Logger = logging.getLogger(__name__)
+
 COMMAND: str = """set -eu
 apt-get update -qq
 apt-get install -y -qq --no-install-recommends ca-certificates gnupg
@@ -31,7 +33,7 @@ def verify(site: Path, package: str, images: list[str]) -> None:
     if repository.key_fingerprint(site / "acture-archive-keyring.asc") != fingerprint:
         raise ValueError("snapshot key does not match its published fingerprint")
     for image in images:
-        logging.info("Verifying %s on %s", package, image)
+        LOG.info("Verifying %s on %s", package, image)
         subprocess.run(
             [
                 "docker",
