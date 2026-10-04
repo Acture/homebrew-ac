@@ -5,96 +5,90 @@
     <a href="LICENSE"><img src="https://img.shields.io/github/license/Acture/homebrew-ac" alt="License"></a>
     <img src="https://img.shields.io/badge/platform-macOS%20%2B%20Linux-C67A3C" alt="Platforms">
   </p>
-  <h1>Small Rust tools with clear jobs.</h1>
-  <p><strong>A Homebrew tap for a few utilities worth keeping sharp.<br>Not a giant toolbox. Just a few tools that do their work cleanly.</strong></p>
-  <p>
-    <img src="assets/hero-preview.png" alt="Acture Homebrew Tap hero preview" width="980">
-  </p>
+  <h1>Acture software on Homebrew.</h1>
+  <p>A shared tap for command-line tools and future macOS apps.</p>
+  <p><img src="docs/assets/hero-preview.png" alt="Acture Homebrew Tap hero preview" width="980"></p>
 </div>
 
 ## Install
 
-```bash
-brew tap acture/ac
-brew install glyphweave
+Use the full formula name:
+
+```sh
+brew install acture/ac/scriptmark
 ```
 
-Direct installs also work: `brew install acture/ac/<formula>`.
+| Software | Purpose | Channel | Install |
+| --- | --- | --- | --- |
+| [docpack](https://github.com/Acture/docpack) | Generate Typst and LaTeX data modules | Stable source | `brew install acture/ac/docpack` |
+| [glyphweave](https://github.com/Acture/glyphweave) | Generate shape-aware SVG word clouds | Stable source | `brew install acture/ac/glyphweave` |
+| [hanzi-sort](https://github.com/Acture/hanzi-sort) | Sort Chinese text by pinyin or stroke count | Stable source | `brew install acture/ac/hanzi-sort` |
+| [reviewloop](https://github.com/Acture/reviewloop) | Manage paper review submissions and retrieval | Stable source | `brew install acture/ac/reviewloop` |
+| [ScriptMark](https://github.com/Acture/scriptmark) | Grade student programming assignments | Stable binary | `brew install acture/ac/scriptmark` |
+| [Stepwise](https://github.com/Acture/Stepwise) | Practice Python evaluation and propositional logic | Development source | `brew install --HEAD acture/ac/stepwise` |
+| [Foch](https://github.com/Acture/foch) | Analyze and merge EU4 mods; run an LSP server | Development source | `brew install --HEAD acture/ac/foch` |
+| [Teaser](https://github.com/Acture/teaser) | Native macOS workspace and panel manager | Pending cask | See the [cask template](packaging/templates/Casks/teaser.rb.in) |
 
-## What's in this tap
+ScriptMark tracks the published v0.2.0 assets, with their release SHA256 digests,
+and includes Python 3.13 for the Python execution backend. Its upstream development
+branch contains newer work; installing this formula does not install that branch.
 
-### `glyphweave`
+Stepwise and Foch have no published stable release yet. Their `--HEAD` formulae
+build the latest `master` and can change between installations. Source downloads
+exclude private notes. Foch fetches only its pinned public grammar and CWT schema
+submodules, and embeds the schema into the CLI.
 
-Shape-aware SVG word clouds for reports, demos, and other places where plain text should end up as something inspectable.
+Teaser is registered here as a release template. Before enabling
+`brew install --cask acture/ac/teaser`, upstream must isolate its inherited Herdr
+runtime namespace and ship a complete, signed App bundle with a fixed download
+URL and checksum. The template is outside `Casks/` so Homebrew does not advertise
+an unavailable package. Stepwise and Foch desktop apps also await release assets.
 
-![glyphweave preview](assets/glyphweave-preview.svg)
+## Examples
 
-Install: `brew install glyphweave`  
-Upstream: [Acture/glyphweave](https://github.com/Acture/glyphweave)
-
-```bash
-glyphweave \
-  --text "ACTURE" \
-  --word-file words.txt \
-  --algorithm fast-grid \
-  --seed 7 \
-  --output cloud.svg
+```sh
+docpack emit input.json --backend typst
+stepwise --python '1 + 2 * 3' --trace
+foch input inspect ./foch.toml
 ```
 
-### `hanzi-sort`
+![glyphweave preview](docs/assets/glyphweave-preview.svg)
+
+```sh
+glyphweave --text ACTURE --word-file words.txt --algorithm fast-grid --seed 7 --output cloud.svg
+```
+
+## Maintenance
+
+CI discovers every active formula, audits and styles the tap, and runs installation
+and behavior tests on macOS and Linux. HEAD-only formulae are installed with
+`--HEAD`. The workflow uses stable Homebrew. A configured job is not evidence of
+a passing build; current verification is recorded in [docs/STATUS.md](docs/STATUS.md).
+
+Repository layout:
 
 ```text
-before
-张三
-李四
-王五
-
-after
-李四
-王五
-张三
+Formula/    Active Homebrew formulae
+Aliases/    Homebrew formula aliases
+packaging/  Release templates and shared download strategies
+scripts/    Maintenance tools
+docs/       Public documentation, verification status, examples and preview assets
+notes/      Optional private review and planning notes
 ```
 
-Sort Chinese text by pinyin or stroke count for publishing, cleanup, and other workflows that need a stable order.
+Inactive templates stay in `packaging/templates/`. Activate verified releases in
+`Formula/` or a top-level `Casks/` directory. Preview generation writes to
+`docs/assets/`.
 
-Install: `brew install hanzi-sort`  
-Upstream: [Acture/hanzi-sort](https://github.com/Acture/hanzi-sort)
+Keep formula logic in this tap. Upstream release automation should update versioned
+URLs and checksums without replacing custom tests. Fixes to that automation belong
+in pull requests to the upstream repositories.
 
-## Also in this tap
-
-### `reviewloop`
-
-A durable CLI/daemon for paperreview.ai submission and review retrieval when the workflow needs persistent state, explicit retries, and local artifacts.
-
-Install: `brew install reviewloop`  
-Upstream: [Acture/review-loop](https://github.com/Acture/review-loop)
-
-```bash
-$ reviewloop status --json
-[]
-```
-
-### `d2typ`
-
-Turn CSV, JSON, YAML, TOML, or XLSX into Typst-ready data when a document pipeline needs one less manual step.
-
-Install: `brew install d2typ`  
-Upstream: [Acture/d2typ](https://github.com/Acture/d2typ)
-
-```bash
-$ d2typ examples/d2typ/input.json -o out.typ
-$ cat out.typ
-#let data = {count: 3, items: [svg, typst, pinyin], ready: true}
-```
-
-## Why this tap exists
-
-This tap stays small on purpose. The formulae here do narrow jobs, produce output that can be checked quickly, and keep installation boring.
-
-- Tracks tagged upstream releases.
-- CI audits the tap and verifies the stable install set.
-- Smoke tests validate real output, not just `--version`.
+Private reviews and distribution plans live in the optional `notes/` submodule;
+its entry is `notes/README.md`. Public installation and CI do not require it.
+Notes editing and submission follow the central vault's
+[project guide](https://github.com/Acture/obsidian-vault/blob/master/项目接入.md).
 
 ## License
 
-This tap is distributed under the [AGPL-3.0-only](LICENSE) license.
+This tap is [AGPL-3.0-only](LICENSE). Each packaged application retains its own license.

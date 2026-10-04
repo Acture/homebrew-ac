@@ -37,7 +37,7 @@ class Glyphweave < Formula
                               "--font", font,
                               "--no-progress",
                               "--output", output
-    assert_predicate output, :exist?
+    assert_path_exists output
     assert_match "<svg", output.read
   end
 end

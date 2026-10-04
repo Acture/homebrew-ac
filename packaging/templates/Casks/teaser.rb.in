@@ -1,0 +1,14 @@
+# Enable as Casks/teaser.rb only after publishing the complete signed App bundle.
+cask "teaser" do
+  version "@VERSION@"
+  sha256 "@SHA256@"
+
+  url "https://github.com/Acture/teaser/releases/download/v#{version}/@ASSET_NAME@"
+  name "Teaser"
+  desc "Native macOS workspace and panel manager"
+  homepage "https://github.com/Acture/teaser"
+
+  depends_on macos: ">= :sonoma"
+
+  app "Teaser.app"
+end
