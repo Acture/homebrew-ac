@@ -67,11 +67,15 @@ jobs:
         with:
           stable: true
 
-      - name: Unlink runner's legacy OpenSSL
+      - name: Remove runner's legacy OpenSSL link
         if: runner.os == 'macOS'
         run: |
           if [[ -d "$(brew --cellar)/openssl@1.1" ]]; then
             brew unlink openssl@1.1
+          fi
+          openssl="$(brew --prefix)/bin/openssl"
+          if [[ -L "$openssl" && "$(readlink "$openssl")" == "$(brew --prefix)/opt/openssl@1.1/bin/openssl" ]]; then
+            unlink "$openssl"
           fi
 
       - name: Install formula
