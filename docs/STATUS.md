@@ -1,17 +1,40 @@
 # Distribution status
 
-Checked on 2026-10-04. This records repository changes and validation, not a
+Updated on 2026-10-08. This records repository changes and validation, not a
 published release. Execution is tracked in [OSS-131](https://linear.app/acturea/issue/OSS-131).
 
 ## Entries
 
 | Entry | Repository state | Installation validation |
 | --- | --- | --- |
-| docpack, glyphweave, hanzi-sort, reviewloop | Existing stable formulae; reviewloop smoke repaired; docpack restored to CI | New CI run pending |
-| ScriptMark | Stable v0.2.0 binary formula for macOS/Linux ARM64/x86_64; Python 3.13 wrapper and grading smoke | Full install/test pending |
-| Stepwise | HEAD-only CLI formula, excluding private notes | Source build/test pending |
-| Foch | HEAD-only CLI formula, with pinned public grammar/schema submodules | Source build/test pending; existing local binary passed the manifest smoke |
+| docpack, glyphweave, hanzi-sort, reviewloop | Existing stable formulae; reviewloop smoke repaired; docpack restored to CI | CI install/test passed on macOS 15 ARM64 and Linux x86_64 |
+| ScriptMark | Stable v0.2.0 binary formula for macOS/Linux ARM64/x86_64; Python 3.13 wrapper and grading smoke | CI install/test passed on macOS 15 ARM64 and Linux x86_64 |
+| Stepwise | HEAD-only CLI formula, excluding private notes | CI source build/test passed on macOS 15 ARM64 and Linux x86_64 |
+| Foch | HEAD-only CLI formula, with pinned public grammar/schema submodules | CI source build/test and manifest smoke passed on macOS 15 ARM64 and Linux x86_64 |
 | Teaser | README entry and inactive cask template | Await independent runtime namespace and complete signed release bundle; [P-859](https://linear.app/acturea/issue/P-859) |
+
+## Brew CI repair
+
+The repair is tracked in [OSS-350](https://linear.app/acturea/issue/OSS-350):
+
+- The tap declares its two APT configuration variables in `.github/actionlint.yaml`,
+  so Homebrew style validates the shared workflows without rejecting valid variables.
+  Undeclared variables are still rejected.
+- Audit runs on macOS 15 ARM64; source installation is tested on that runner and
+  Linux. The macOS runner removes its legacy OpenSSL link before dependency
+  upgrades, including the image's manually created link that `brew unlink` leaves behind.
+- reviewloop's test overwrites its initialized config with `atomic_write`.
+  ScriptMark's test reads v0.2.0's student-keyed JSON object and checks the grading result.
+
+Local full-tap style, strict audit, formula loading, directory links and workflow
+lint passed. [Brew CI](https://github.com/Acture/homebrew-ac/actions/runs/37769383055)
+passed for code commit `0257f67`: audit and all 14 installation/test jobs succeeded.
+This accepts the seven active formulae on macOS 15 ARM64 and Linux x86_64;
+other architectures are outside this CI matrix. The repair remains on
+`fix/oss-350-brew-ci`, awaiting merge into `master`.
+ReviewLoop's upstream renderer must preserve the same smoke fix before its next
+release; this follow-up is tracked separately in
+[OSS-354](https://linear.app/acturea/issue/OSS-354).
 
 ## Checks completed
 
