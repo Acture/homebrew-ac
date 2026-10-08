@@ -33,7 +33,7 @@ class Reviewloop < Formula
     config_path = testpath/".config/reviewloop/config.toml"
     assert_path_exists config_path
     assert_includes config_path.read, "[providers.stanford]"
-    config_path.write <<~TOML
+    config_path.atomic_write <<~TOML
       [logging]
       output = "stderr"
     TOML

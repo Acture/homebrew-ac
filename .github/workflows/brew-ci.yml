@@ -19,7 +19,7 @@ env:
 
 jobs:
   audit:
-    runs-on: macos-14
+    runs-on: macos-15
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
@@ -48,7 +48,7 @@ jobs:
         id: matrix
         run: |
           brew info --json=v2 --formula "$(brew --repository acture/ac)"/Formula/*.rb |
-            jq -ec '{include: [.formulae[] as $formula | ["ubuntu-latest", "macos-14"][] |
+            jq -ec '{include: [.formulae[] as $formula | ["ubuntu-latest", "macos-15"][] |
               {os: ., formula: ("acture/ac/" + $formula.name), head: ($formula.versions.stable == null)}]} |
               select(.include | length > 0)' |
             sed 's/^/matrix=/' >> "$GITHUB_OUTPUT"
@@ -66,6 +66,13 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@1f8e202ffddf94def7f42f6fa3a482e821489f9c
         with:
           stable: true
+
+      - name: Unlink runner's legacy OpenSSL
+        if: runner.os == 'macOS'
+        run: |
+          if [[ -d "$(brew --cellar)/openssl@1.1" ]]; then
+            brew unlink openssl@1.1
+          fi
 
       - name: Install formula
         run: brew install --build-from-source ${{ matrix.head && '--HEAD' || '' }} "${{ matrix.formula }}"
