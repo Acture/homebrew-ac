@@ -135,8 +135,8 @@ pass Homebrew style, workflow lint passes, and public local links resolve.
 A Git fixture also verifies that staging detects updates through the physical
 formula path, while a pathspec through the directory symlink does not.
 Upstream release workflows must use the tracked path when updating this layout;
-their path adaptations remain pending. This does not establish full installation
-acceptance; the existing installation matrix still has separate failures.
+their path adaptations remain pending. These layout checks did not establish
+full installation acceptance; the later CI acceptance is recorded above.
 
 README links, template references, Formula `require_relative` paths and the
 preview generator's output directory were updated. The preview generator's font
@@ -147,8 +147,8 @@ digests; no preview images were regenerated.
 Validation passed: local Markdown/HTML links, Ruby syntax, Homebrew style for all
 seven active formulae, direct loading through Homebrew's Formulary (including
 both HEAD download strategies), Ruff lint and formatting of modified lines, ty,
-and `git diff --check`. These checks validate the layout and loading;
-full installation remains pending.
+and `git diff --check`. These local checks validate the layout and loading;
+the complete CI installation results are recorded above.
 
 The user then clarified the ownership boundary: `docs/` is for public material;
 internal reviews and plans belong in private `notes/`. The distribution review
@@ -212,12 +212,12 @@ the credential is still absent. reviewloop's release environment has its declare
 crates.io and Homebrew secret names, and docpack has its declared Homebrew secret
 name; credential validity and future publication have not been tested.
 
-All three PRs are merged. Source installation and release publication remain
-separate pending validation.
+All three PRs are merged. Installation of the active tap formulae has now passed
+the CI matrix above. Future upstream releases require their own publication validation.
 
-## Pending validation
+## Local validation
 
-Long-running source builds and installations are to be started by the user.
+Long-running local source builds and installations are to be started by the user.
 The machine's installed `acture/ac` tap is a separate checkout: installing its
 full formula names before syncing it will exercise the old files.
 
@@ -239,9 +239,9 @@ end
 
 The temporary tap installs actual software and does not publish these changes.
 Remove its registration after review with `brew untap acture/ac-review` once its
-installed formulae no longer depend on it. Existing glyphweave/hanzi-sort behavior
-and the Linux builds remain covered by the pending CI run.
+installed formulae no longer depend on it. glyphweave/hanzi-sort and the Linux
+builds passed the complete CI matrix above.
 
 The upstream PRs and the private notes branch were published as
-recorded above. No GitHub Release or winget submission was performed. The tap's
-installation matrix remains pending verification.
+recorded above. This CI repair did not publish a GitHub Release or submit to
+winget. Installation acceptance is limited to the platforms in the CI matrix above.
