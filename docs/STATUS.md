@@ -1,17 +1,40 @@
 # Distribution status
 
-Checked on 2026-10-04. This records repository changes and validation, not a
+Updated on 2026-10-08. This records repository changes and validation, not a
 published release. Execution is tracked in [OSS-131](https://linear.app/acturea/issue/OSS-131).
 
 ## Entries
 
 | Entry | Repository state | Installation validation |
 | --- | --- | --- |
-| docpack, glyphweave, hanzi-sort, reviewloop | Existing stable formulae; reviewloop smoke repaired; docpack restored to CI | New CI run pending |
-| ScriptMark | Stable v0.2.0 binary formula for macOS/Linux ARM64/x86_64; Python 3.13 wrapper and grading smoke | Full install/test pending |
-| Stepwise | HEAD-only CLI formula, excluding private notes | Source build/test pending |
-| Foch | HEAD-only CLI formula, with pinned public grammar/schema submodules | Source build/test pending; existing local binary passed the manifest smoke |
+| docpack, glyphweave, hanzi-sort, reviewloop | Existing stable formulae; reviewloop smoke repaired; docpack restored to CI | CI install/test passed on macOS 15 ARM64 and Linux x86_64 |
+| ScriptMark | Stable v0.2.0 binary formula for macOS/Linux ARM64/x86_64; Python 3.13 wrapper and grading smoke | CI install/test passed on macOS 15 ARM64 and Linux x86_64 |
+| Stepwise | HEAD-only CLI formula, excluding private notes | CI source build/test passed on macOS 15 ARM64 and Linux x86_64 |
+| Foch | HEAD-only CLI formula, with pinned public grammar/schema submodules | CI source build/test and manifest smoke passed on macOS 15 ARM64 and Linux x86_64 |
 | Teaser | README entry and inactive cask template | Await independent runtime namespace and complete signed release bundle; [P-859](https://linear.app/acturea/issue/P-859) |
+
+## Brew CI repair
+
+The repair is tracked in [OSS-350](https://linear.app/acturea/issue/OSS-350):
+
+- The tap declares its two APT configuration variables in `.github/actionlint.yaml`,
+  so Homebrew style validates the shared workflows without rejecting valid variables.
+  Undeclared variables are still rejected.
+- Audit runs on macOS 15 ARM64; source installation is tested on that runner and
+  Linux. The macOS runner removes its legacy OpenSSL link before dependency
+  upgrades, including the image's manually created link that `brew unlink` leaves behind.
+- reviewloop's test overwrites its initialized config with `atomic_write`.
+  ScriptMark's test reads v0.2.0's student-keyed JSON object and checks the grading result.
+
+Local full-tap style, strict audit, formula loading, directory links and workflow
+lint passed. [Brew CI](https://github.com/Acture/homebrew-ac/actions/runs/37769383055)
+passed for code commit `0257f67`: audit and all 14 installation/test jobs succeeded.
+This accepts the seven active formulae on macOS 15 ARM64 and Linux x86_64;
+other architectures are outside this CI matrix. The repair remains on
+`fix/oss-350-brew-ci`, awaiting merge into `master`.
+ReviewLoop's upstream renderer must preserve the same smoke fix before its next
+release; this follow-up is tracked separately in
+[OSS-354](https://linear.app/acturea/issue/OSS-354).
 
 ## Checks completed
 
@@ -112,8 +135,8 @@ pass Homebrew style, workflow lint passes, and public local links resolve.
 A Git fixture also verifies that staging detects updates through the physical
 formula path, while a pathspec through the directory symlink does not.
 Upstream release workflows must use the tracked path when updating this layout;
-their path adaptations remain pending. This does not establish full installation
-acceptance; the existing installation matrix still has separate failures.
+their path adaptations remain pending. These layout checks did not establish
+full installation acceptance; the later CI acceptance is recorded above.
 
 README links, template references, Formula `require_relative` paths and the
 preview generator's output directory were updated. The preview generator's font
@@ -124,8 +147,8 @@ digests; no preview images were regenerated.
 Validation passed: local Markdown/HTML links, Ruby syntax, Homebrew style for all
 seven active formulae, direct loading through Homebrew's Formulary (including
 both HEAD download strategies), Ruff lint and formatting of modified lines, ty,
-and `git diff --check`. These checks validate the layout and loading;
-full installation remains pending.
+and `git diff --check`. These local checks validate the layout and loading;
+the complete CI installation results are recorded above.
 
 The user then clarified the ownership boundary: `docs/` is for public material;
 internal reviews and plans belong in private `notes/`. The distribution review
@@ -189,12 +212,12 @@ the credential is still absent. reviewloop's release environment has its declare
 crates.io and Homebrew secret names, and docpack has its declared Homebrew secret
 name; credential validity and future publication have not been tested.
 
-All three PRs are merged. Source installation and release publication remain
-separate pending validation.
+All three PRs are merged. Installation of the active tap formulae has now passed
+the CI matrix above. Future upstream releases require their own publication validation.
 
-## Pending validation
+## Local validation
 
-Long-running source builds and installations are to be started by the user.
+Long-running local source builds and installations are to be started by the user.
 The machine's installed `acture/ac` tap is a separate checkout: installing its
 full formula names before syncing it will exercise the old files.
 
@@ -216,9 +239,9 @@ end
 
 The temporary tap installs actual software and does not publish these changes.
 Remove its registration after review with `brew untap acture/ac-review` once its
-installed formulae no longer depend on it. Existing glyphweave/hanzi-sort behavior
-and the Linux builds remain covered by the pending CI run.
+installed formulae no longer depend on it. glyphweave/hanzi-sort and the Linux
+builds passed the complete CI matrix above.
 
 The upstream PRs and the private notes branch were published as
-recorded above. No GitHub Release or winget submission was performed. The tap's
-installation matrix remains pending verification.
+recorded above. This CI repair did not publish a GitHub Release or submit to
+winget. Installation acceptance is limited to the platforms in the CI matrix above.

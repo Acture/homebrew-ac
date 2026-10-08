@@ -60,8 +60,9 @@ class Scriptmark < Formula
       "--output", testpath/"results.json"
     reports = JSON.parse((testpath/"results.json").read)
     assert_equal 1, reports.length
-    assert_equal "alice", reports.first.fetch("student_id")
-    cases = reports.first.fetch("test_results").first.fetch("cases")
+    report = reports.fetch("alice")
+    assert_equal "alice", report.fetch("student_id")
+    cases = report.fetch("test_results").first.fetch("cases")
     assert_equal 1, cases.length
     assert_equal "passed", cases.first.fetch("status")
   end
