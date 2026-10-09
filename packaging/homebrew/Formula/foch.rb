@@ -7,7 +7,7 @@ class Foch < Formula
   head "https://github.com/Acture/foch.git",
        branch:            "master",
        using:             PublicSubmodulesGitDownloadStrategy,
-       public_submodules: %w[src/packages/tree-sitter-paradox vendor/cwtools-eu4-config]
+       public_submodules: %w[src/packages/tree-sitter-paradox src/packages/foch/vendor/cwtools-eu4-config]
 
   depends_on "rust" => :build
 
