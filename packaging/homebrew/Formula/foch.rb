@@ -1,13 +1,9 @@
-require (Pathname(__FILE__).realpath.parent.parent/"lib/public_submodules_git_download_strategy").to_s
-
 class Foch < Formula
   desc "EU4 mod analysis, merging and language server toolkit"
   homepage "https://github.com/Acture/foch"
+  url "https://github.com/Acture/foch/releases/download/v0.0.1/foch-0.0.1-source.tar.gz"
+  sha256 "0503eba89f61eb86c62dea465bf42d480f2352358eca6527affd677fc5ed27ba"
   license all_of: ["AGPL-3.0-only", "GPL-3.0-only", "MIT"]
-  head "https://github.com/Acture/foch.git",
-       branch:            "master",
-       using:             PublicSubmodulesGitDownloadStrategy,
-       public_submodules: %w[src/packages/tree-sitter-paradox src/packages/foch/vendor/cwtools-eu4-config]
 
   depends_on "rust" => :build
 
